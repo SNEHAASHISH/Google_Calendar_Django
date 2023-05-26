@@ -1,3 +1,5 @@
+import sys
+
 """
 Django settings for google_calendar_integration project.
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sslserver'
 ]
 
 MIDDLEWARE = [
@@ -121,3 +124,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SSLPORT = 8443
+# Set the secure proxy header and SSL redirect
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+# Set the SSL certificate paths
+SECURE_SSL_CERTIFICATE = 'google_calendar_integration\localhost.pem'
+SECURE_SSL_PRIVATE_KEY = 'google_calendar_integration\localhost-key.pem'
+
+if 'runsslserver' in sys.argv:
+    # Django SSL Server Settings
+    # Set the SSL certificate and private key paths
+    # Update the paths with the actual file locations on your system
+    SSLCERTIFICATE = 'google_calendar_integration\localhost.pem'
+    SSLPRIVATEKEY = 'google_calendar_integration\localhost-key.pem'
+    # Set the SSL port number
+    # Use a port number different from your regular HTTP server
+    # For example, use 8443 instead of the default 8000
+    SSLPORT = 8443
+    # Set the Django development server address
+    # By default, it listens on all available network interfaces
+    # Update it if you want to bind to a specific IP address
+    # For example, to bind to localhost only, use:
+    # SSLADDRESS = 'localhost'
+    SSLADDRESS = '0.0.0.0'  # Listen on all available network interfaces

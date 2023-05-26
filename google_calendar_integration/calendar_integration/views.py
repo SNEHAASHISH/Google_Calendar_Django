@@ -12,7 +12,8 @@ CLIENT_SECRET_FILE = "C:\\Users\\Lenovo\\Desktop\\Google_Calendar_Django\\google
 class GoogleCalendarInitView(View):
     def get(self, request):
         flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-        #credentials = flow.run_console()
+        # credentials = flow.run_console()
+        flow.redirect_uri = 'https://127.0.0.1:8000/rest/v1/calendar/redirect/'  # Set the redirect_uri to use HTTPS
         authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
         request.session['state'] = state
         return HttpResponseRedirect(authorization_url)
@@ -22,6 +23,7 @@ class GoogleCalendarRedirectView(View):
     def get(self, request):
         state = request.session.pop('state', '')
         flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES, state=state)
+        flow.redirect_uri = 'https://127.0.0.1:8000/rest/v1/calendar/redirect/'  # Set the redirect_uri to use HTTPS
         flow.fetch_token(authorization_response=request.build_absolute_uri())
         credentials = flow.credentials
         service = build('calendar', 'v3', credentials=credentials)
@@ -35,4 +37,3 @@ class GoogleCalendarRedirectView(View):
                 start = event['start'].get('dateTime', event['start'].get('date'))
                 response += f"- {start} - {event['summary']}\n"
         return HttpResponse(response)
-
