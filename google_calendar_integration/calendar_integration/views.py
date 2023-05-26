@@ -12,6 +12,7 @@ CLIENT_SECRET_FILE = "C:\\Users\\Lenovo\\Desktop\\Google_Calendar_Django\\google
 class GoogleCalendarInitView(View):
     def get(self, request):
         flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+        #credentials = flow.run_console()
         authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
         request.session['state'] = state
         return HttpResponseRedirect(authorization_url)
